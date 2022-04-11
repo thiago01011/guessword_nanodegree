@@ -59,10 +59,10 @@ class GameFragment : Fragment() {
         binding.gameViewModel = gameViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        gameViewModel.eventBuzz.observe(viewLifecycleOwner, Observer { newStatus ->
-            Log.i("GameFragment", "pattern: ${newStatus}")
-            if (newStatus) {
-                buzz(gameViewModel.buzz.value?.pattern?: GameViewModel.BuzzType.NO_BUZZ.pattern)
+        gameViewModel.eventBuzz.observe(viewLifecycleOwner, Observer { buzzType ->
+            if (buzzType != GameViewModel.BuzzType.NO_BUZZ) {
+                buzz(buzzType.pattern)
+                Log.i("GameFragment", "pattern: ${buzzType.pattern}")
                 gameViewModel.onFinishedBuzzEvent()
             }
         })

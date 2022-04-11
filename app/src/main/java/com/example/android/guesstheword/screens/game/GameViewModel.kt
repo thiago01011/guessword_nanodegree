@@ -47,17 +47,13 @@ class GameViewModel : ViewModel() {
     var eventFinishedGame : LiveData<Boolean> = _eventFinishedGame
 
     // The buzz event
-    private val _eventBuzz = MutableLiveData<Boolean>()
-    var eventBuzz : LiveData<Boolean> = _eventBuzz
-
-    // The buzz event
-    private val _buzz = MutableLiveData<BuzzType>()
-    var buzz : LiveData<BuzzType> = _buzz
+    private val _eventBuzz = MutableLiveData<BuzzType>()
+    var eventBuzz : LiveData<BuzzType> = _eventBuzz
 
     private var timer : CountDownTimer
 
     private val _currentTime = MutableLiveData<Long>()
-    val currentTime : LiveData<Long> = _currentTime
+    private val currentTime : LiveData<Long> = _currentTime
 
     val currentTimeString = Transformations.map(currentTime) { time ->
         DateUtils.formatElapsedTime(time)
@@ -78,21 +74,14 @@ class GameViewModel : ViewModel() {
 
             override fun onTick(millisUntilFinished: Long) {
                 _currentTime.value = millisUntilFinished / ONE_SECOND
-                var time = _currentTime.value
                 if ((millisUntilFinished / ONE_SECOND) <= COUNTDOWN_PANIC_SECONDS) {
-                    _buzz.value = BuzzType.COUNTDOWN_PANIC
-                    _eventBuzz.value = true
-                }
-                if (time?.equals(0)?:true) {
-                    if (_score?.value?:0 <= 0) {
-                        _buzz.value = BuzzType.GAME_OVER
-                        _eventBuzz.value = true
-                    }
+                    _eventBuzz.value = BuzzType.COUNTDOWN_PANIC
                 }
             }
 
             override fun onFinish() {
                 _currentTime.value = DONE
+                _eventBuzz.value = BuzzType.GAME_OVER
                 _eventFinishedGame.value = true
             }
         }
@@ -158,19 +147,12 @@ class GameViewModel : ViewModel() {
     fun onCorrect() {
         _score.value = (score.value)?.plus(1)
         Log.i("GameViewModel", "Correct buzz Correct.")
-        _buzz.value = BuzzType.CORRECT
-        _eventBuzz.value = true
+        _eventBuzz.value = BuzzType.CORRECT
         nextWord()
     }
 
     fun onFinishedBuzzEvent() {
-        _eventBuzz.value = false
-        _buzz.value = BuzzType.NO_BUZZ
-    }
-
-    fun onGameOver() {
-        _eventBuzz.value = true
-        _buzz.value = BuzzType.GAME_OVER
+        _eventBuzz.value = BuzzType.NO_BUZZ
     }
 
     fun onFinishedGameEvent() {
