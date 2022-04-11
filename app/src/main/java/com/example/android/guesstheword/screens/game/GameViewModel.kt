@@ -45,7 +45,6 @@ class GameViewModel : ViewModel() {
         nextWord()
 
         _score.value = 0
-        _word.value = ""
         _eventFinishedGame.value = false
 
         timer = object : CountDownTimer(COUNTDOWN_TIME, ONE_SECOND) {
